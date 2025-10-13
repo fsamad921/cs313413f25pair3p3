@@ -7,10 +7,16 @@ public class Point extends Location {
 
     // TODO your job
     // HINT: use a circle with radius 0 as the shape!
-
+    protected final int x;
+    protected final int y;
     public Point(final int x, final int y) {
-        super(-1, -1, null);
+        super(x, x, null);
         assert x >= 0;
         assert y >= 0;
+        this.x = x;
+        this.y = y;
     }
+    public int getX(){return x;}
+
+    public int getY(){return y;}
 }
