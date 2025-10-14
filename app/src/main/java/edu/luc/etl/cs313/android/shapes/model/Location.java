@@ -16,6 +16,9 @@ public non-sealed class Location implements Shape {
     }
 
     public Location(Rectangle r, int y, Rectangle r1) {
+        x = 0;
+        this.y = 0;
+        shape = null;
     }
 
     public Shape getShape() {
