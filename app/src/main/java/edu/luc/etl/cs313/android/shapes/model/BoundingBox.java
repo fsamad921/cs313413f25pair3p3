@@ -80,7 +80,7 @@ public class BoundingBox implements Visitor<Location> {
 
     @Override
     public Location onPolygon(final Polygon s) {
-        Shape shapeOfS = (Shape) s.getPoints();
+        Shape shapeOfS = s.getPoints();
         return new Location(0,0,shapeOfS);
     }
 }
