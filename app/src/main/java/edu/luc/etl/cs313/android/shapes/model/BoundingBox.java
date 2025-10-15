@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class BoundingBox implements Visitor<Location> {
 
-    // TODO entirely your job (except onCircle)
+    // done entirely your job (except onCircle)
 
     @Override
     public Location onCircle(final Circle c) {
@@ -19,17 +19,25 @@ public class BoundingBox implements Visitor<Location> {
 
     @Override
     public Location onFill(final Fill f) {
-        return new Location(0,0,f);
+        return f.getShape().accept(this);
     }
 
     @Override
     public Location onGroup(final Group g) {
-        int minX = 0;
-        int minY = 0;
-        int maxX = 0;
-        int maxY = 0;
+
         var shapes = g.getShapes();
-        for(int i = 0; i < shapes.size(); i++){
+        if (shapes.isEmpty()) {
+            return new Location(0, 0, new Rectangle(0, 0));
+        }
+
+        Location firstBox = shapes.get(0).accept(this);
+        int minX = firstBox.getX();
+        int minY = firstBox.getY();
+        Rectangle firstRect = (Rectangle) firstBox.getShape();
+        int maxX = minX + firstRect.getWidth();
+        int maxY = minY + firstRect.getHeight();
+        //1 because we already processed shape 0
+        for(int i = 1; i < shapes.size(); i++){
            Location boundingBox = shapes.get(i).accept(this);
 
            int left = boundingBox.getX();
@@ -50,7 +58,7 @@ public class BoundingBox implements Visitor<Location> {
 
     @Override
     public Location onLocation(final Location l) {
-        Location innerBox = l.accept(this);
+        Location innerBox = l.getShape().accept(this);
         int innerX = innerBox.getX();
         int innerY = innerBox.getY();
         Rectangle rect = (Rectangle) innerBox.getShape();
@@ -61,26 +69,40 @@ public class BoundingBox implements Visitor<Location> {
 
     @Override
     public Location onRectangle(final Rectangle r) {
-        r.getHeight();
-        r.getWidth();
-        return new Location(r,0,r);
+        return new Location(0,0, new Rectangle(r.getWidth(),r.getHeight()));
+
     }
 
     @Override
     public Location onStrokeColor(final StrokeColor c) {
-        Shape shapeOfC = c.getShape();
-        return new Location(0,0,shapeOfC);
+        return c.getShape().accept(this);
     }
 
     @Override
     public Location onOutline(final Outline o) {
-        Shape shapeOfO = o.getShape();
-        return new Location(0,0,shapeOfO);
+        return o.getShape().accept(this);
     }
 
     @Override
     public Location onPolygon(final Polygon s) {
-        Shape shapeOfS = (Shape) s.getPoints();
-        return new Location(0,0,shapeOfS);
+        List<? extends Point> points = s.getPoints();
+        // check when testing
+        if(points.isEmpty()){
+            return new Location(0,0, new Rectangle(0,0));
+        }
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int maxY = Integer.MIN_VALUE;
+
+        for(Point p : points){
+            minX = Math.min(minX, p.getX());
+            minY = Math.min(minY,p.getY());
+            maxX = Math.max(maxX,p.getX());
+            maxY = Math.max(maxY,p.getY());
+        }
+        int width = maxX-minX;
+        int height = maxY-minY;
+        return new Location(minX,minY, new Rectangle(width,height));
     }
 }
