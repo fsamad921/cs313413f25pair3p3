@@ -12,6 +12,7 @@ public final class Fill implements Shape {
         this.shape = shape;
     }
 
+
     public Shape getShape() {
         return shape;
     }

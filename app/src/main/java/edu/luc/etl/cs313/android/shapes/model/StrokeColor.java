@@ -9,7 +9,7 @@ public final class StrokeColor implements Shape {
     final Shape shape;
 
     public StrokeColor(final int givenColor, final Shape givenShape) {
-       this.color = givenColor;
+        this.color = givenColor;
         this.shape = givenShape;
     }
 
