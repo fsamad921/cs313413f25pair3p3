@@ -5,7 +5,7 @@ package edu.luc.etl.cs313.android.shapes.model;
  */
 public class Point extends Location {
 
-    // TODO your job
+    // Done your job
     // HINT: use a circle with radius 0 as the shape!
     protected final int x;
     protected final int y;

@@ -45,7 +45,7 @@ public class Draw implements Visitor<Void> {
     public Void onFill(final Fill f) {
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         f.getShape().accept(this);
-        paint.setStyle(null);
+        paint.setStyle(STROKE);
         return null;
     }
 
@@ -75,20 +75,22 @@ public class Draw implements Visitor<Void> {
     public Void onOutline(Outline o) {
         paint.setStyle(STROKE);
         o.getShape().accept(this);
-        paint.setStyle(null);
+        paint.setStyle(STROKE);
         return null;
     }
 
     @Override
     public Void onPolygon(final Polygon s) {
         List<? extends Point> points = s.getPoints();
-        final float[] pts = new float[points.size() * 2];
-        int i = 0;
-        for (Point p : points) {
-            pts[i++] = p.getX();
-            pts[i++] = p.getY();
+        android.graphics.Path path = new android.graphics.Path();
+        Point first = points.get(0);
+        path.moveTo(first.getX(),first.getY());
+        for (int i = 1; i < points.size(); i++) {
+            Point point = points.get(i);
+            path.lineTo(point.getX(),point.getY());
         }
-        canvas.drawLines(pts, paint);
+        path.close();
+        canvas.drawPath(path, paint);
         return null;
     }
 }
