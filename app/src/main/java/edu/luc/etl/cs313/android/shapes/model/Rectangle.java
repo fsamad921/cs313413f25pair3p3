@@ -8,8 +8,8 @@ public final class Rectangle implements Shape {
     protected final int width, height;
 
     public Rectangle(final int width, final int height) {
-        assert width >= 0;
-        assert height >= 0;
+        assert width > 0;
+        assert height > 0;
         this.width = width;
         this.height = height;
     }

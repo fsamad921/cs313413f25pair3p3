@@ -33,7 +33,6 @@ public class Draw implements Visitor<Void> {
     @Override
     public Void onStrokeColor(final StrokeColor c) {
         paint.setColor(c.getColor());
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
         c.getShape().accept(this);
         return null;
     }
@@ -73,6 +72,7 @@ public class Draw implements Visitor<Void> {
     @Override
     public Void onOutline(Outline o) {
         paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(-16776961);
         o.getShape().accept(this);
         return null;
     }
