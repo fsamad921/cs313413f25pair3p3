@@ -7,6 +7,8 @@ import edu.luc.etl.cs313.android.shapes.model.*;
 
 import java.util.List;
 
+import static android.graphics.Paint.Style.STROKE;
+
 /**
  * A Visitor for drawing a shape to an Android canvas.
  */
@@ -32,8 +34,10 @@ public class Draw implements Visitor<Void> {
 
     @Override
     public Void onStrokeColor(final StrokeColor c) {
-        paint.setColor(c.getColor());
+        final int oldColor = paint.getColor();
+        paint.setColor(c.getColor()); // ✅ use the actual color
         c.getShape().accept(this);
+        paint.setColor(oldColor);
         return null;
     }
 
@@ -41,12 +45,13 @@ public class Draw implements Visitor<Void> {
     public Void onFill(final Fill f) {
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         f.getShape().accept(this);
+        paint.setStyle(null);
         return null;
     }
 
     @Override
     public Void onGroup(final Group g) {
-        for(Shape shape : g.getShapes()) {
+        for (Shape shape : g.getShapes()) {
             shape.accept(this);
         }
         return null;
@@ -54,12 +59,9 @@ public class Draw implements Visitor<Void> {
 
     @Override
     public Void onLocation(final Location l) {
-        //TODO
-        // done
         canvas.translate(l.getX(), l.getY());
         l.getShape().accept(this);
         canvas.translate(-l.getX(), -l.getY());
-      //  l
         return null;
     }
 
@@ -71,18 +73,18 @@ public class Draw implements Visitor<Void> {
 
     @Override
     public Void onOutline(Outline o) {
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(-16776961);
+        paint.setStyle(STROKE);
         o.getShape().accept(this);
+        paint.setStyle(null);
         return null;
     }
 
     @Override
     public Void onPolygon(final Polygon s) {
-        List<? extends Point>points = s.getPoints();
-        final float[] pts = new float[points.size()*2];
+        List<? extends Point> points = s.getPoints();
+        final float[] pts = new float[points.size() * 2];
         int i = 0;
-        for(Point p : points){
+        for (Point p : points) {
             pts[i++] = p.getX();
             pts[i++] = p.getY();
         }
