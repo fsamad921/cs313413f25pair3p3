@@ -82,15 +82,16 @@ public class Draw implements Visitor<Void> {
     @Override
     public Void onPolygon(final Polygon s) {
         List<? extends Point> points = s.getPoints();
-        android.graphics.Path path = new android.graphics.Path();
-        Point first = points.get(0);
-        path.moveTo(first.getX(),first.getY());
-        for (int i = 1; i < points.size(); i++) {
-            Point point = points.get(i);
-            path.lineTo(point.getX(),point.getY());
+        final float[] pts = new float[(points.size() - 1) * 4];
+        for (int i = 0; i < points.size() - 1; i++) {
+            Point p1 = points.get(i);
+            Point p2 = points.get(i + 1);
+            pts[i * 4]     = p1.getX();
+            pts[i * 4 + 1] = p1.getY();
+            pts[i * 4 + 2] = p2.getX();
+            pts[i * 4 + 3] = p2.getY();
         }
-        path.close();
-        canvas.drawPath(path, paint);
+        canvas.drawLines(pts, paint);
         return null;
     }
 }
